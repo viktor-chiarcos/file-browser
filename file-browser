@@ -1,0 +1,106 @@
+#!/bin/bash
+
+import-colors() {
+txtblk='\e[0;30m' # Black - Regular
+txtred='\e[0;31m' # Red
+txtgrn='\e[0;32m' # Green
+txtylw='\e[0;33m' # Yellow
+txtblu='\e[0;34m' # Blue
+txtpur='\e[0;35m' # Purple
+txtcyn='\e[0;36m' # Cyan
+txtwht='\e[0;37m' # White
+bldblk='\e[1;30m' # Black - Bold
+bldred='\e[1;31m' # Red
+bldgrn='\e[1;32m' # Green
+bldylw='\e[1;33m' # Yellow
+bldblu='\e[1;34m' # Blue
+bldpur='\e[1;35m' # Purple
+bldcyn='\e[1;36m' # Cyan
+bldwht='\e[1;37m' # White
+unkblk='\e[4;30m' # Black - Underline
+undred='\e[4;31m' # Red
+undgrn='\e[4;32m' # Green
+undylw='\e[4;33m' # Yellow
+undblu='\e[4;34m' # Blue
+undpur='\e[4;35m' # Purple
+undcyn='\e[4;36m' # Cyan
+undwht='\e[4;37m' # White
+bakblk='\e[40m'   # Black - Background
+bakred='\e[41m'   # Red
+bakgrn='\e[42m'   # Green
+bakylw='\e[43m'   # Yellow
+bakblu='\e[44m'   # Blue
+bakpur='\e[45m'   # Purple
+bakcyn='\e[46m'   # Cyan
+bakwht='\e[47m'   # White
+txtrst='\e[0m'    # Text Reset
+}
+
+echo -e "\e[46;30mFile Browser Version 1.0\e[0m"
+if echo $1 | egrep "." >&/dev/null
+then
+	if [ $1 = "-h" ]
+	then echo -e "\e[44mArgumente für File Browser:\n`basename $0` [ORDNER/-h]\e[0m" ; exit
+	else
+		if [ ! -d "$1" ]
+		then echo -e "\e[41m[ERROR 1] Datei oder Verzeichnis nicht gefunden oder ist kein Verzeichnis\e[0m" ; exit 1
+		else DIRECTORY=$1
+		fi
+	fi
+	
+fi
+
+if echo $DIRECTORY | egrep -v "."
+then DIRECTORY=$HOME
+fi
+
+while [[ true ]]; do
+	cd $DIRECTORY
+	echo -e "\e[46;30mArbeitsverzeichnis: `pwd`\e[0m\n\e[46;30mAktionen:\e[0m\n\e[4;33m1=Pfad ändern\e[0m\n\e[4;33m2=Im XFCE-TERMINAL öffnen\e[0m\n\e[4;33m3=Befehl im Verzeichnis ausführen\e[0m\n\e[4;33m4=Dateien und Verzeichnisse auflisten\e[0m\n\e[4;33m5=Neuer Ordner\e[0m\n\e[4;33m6=Neue Datei\e[0m\n\e[4;33m7=In der Bash öffnen\e[0m\n\e[4;33m8=In Sublime Text öffnen\e[0m\n\e[4;33m9=Datei oder Verzeichnis löschen\e[0m"
+	read action
+	if echo $action | egrep "." >&/dev/null
+	then 
+		if [ $action = "1" ]
+		then echo -e -n "\e[4;33mPfad:\e[0m " ; read path
+			if [ -d $path ]
+			then
+				DIRECTORY=$path
+			else echo -e "\e[41mDatei oder Verzeichnis nicht gefunden oder ist kein Verzeichnis\e[0m"
+			fi
+		elif [ $action = "2" ]
+		then
+			xfce4-terminal
+		elif [ $action = "3" ]
+		then
+			echo -e -n "\e[4;33mBefehl:\e[0m " ; read befehl
+			$befehl
+		elif [ $action = "4" ]
+		then ls --color=yes
+		elif [ $action = "5" ]
+		then echo -e -n "\e[4;33mName:\e[0m " ; read ordner
+			if [ -e $ordner ]
+			then echo -e "\e[41mDer Ordner existiert bereits\e[0m"
+			else
+				mkdir "$ordner"
+				echo -e "\e[46;30mOrdner erstellt\e[0m"
+			fi
+		elif [ $action = "6" ]
+		then echo -e -n "\e[4;33mName:\e[0m " ; read datei
+			echo >> $datei ; echo -e "\e[46;30mDatei erstellt. Falls diese Datei existiert, wurde sie \"NICHT\" überschrieben.\e[0m"
+		elif [ $action = "7" ]
+		then bash
+		elif [ $action = "8" ]
+		then echo -e -n "\e[4;33mDatei:\e[0m " ; read datei
+			subl "$datei"
+		elif [ $action = "9" ]
+		then echo -e -n "\e[4;33mName:\e[0m " ; read datei
+			if [ -e "$datei" ]
+			then echo -e -n "\e[4;33mMit ENTER bestätigen:\e[0m " ; read bestaetigt ; rm -rf "$datei"
+			else echo -e "\e[41mDatei existiert nicht\e[0m"
+			fi
+		else 
+			echo -e "\e[41mUnbekannte Aktion\e[0m"
+		fi
+	fi
+
+done
