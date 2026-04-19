@@ -36,7 +36,7 @@ bakwht='\e[47m'   # White
 txtrst='\e[0m'    # Text Reset
 }
 
-echo -e "\e[46;30mFile Browser Version 1.1\e[0m"
+echo -e "\e[46;30mFile Browser Version 1.2\e[0m"
 if echo $1 | egrep "." >&/dev/null
 then
 	if [ $1 = "-h" ]
@@ -56,7 +56,7 @@ fi
 
 while [[ true ]]; do
 	cd $DIRECTORY
-	echo -e "\e[46;30mArbeitsverzeichnis: `pwd`\e[0m\n\e[46;30mAktionen:\e[0m\n\e[4;33m1=Pfad ändern\e[0m\n\e[4;33m2=Im XFCE-TERMINAL öffnen\e[0m\n\e[4;33m3=Befehl im Verzeichnis ausführen\e[0m\n\e[4;33m4=Dateien und Verzeichnisse auflisten\e[0m\n\e[4;33m5=Neuer Ordner\e[0m\n\e[4;33m6=Neue Datei\e[0m\n\e[4;33m7=In der Bash öffnen\e[0m\n\e[4;33m8=In Sublime Text öffnen\e[0m\n\e[4;33m9=Datei oder Verzeichnis löschen\e[0m\n\e[4;33m10=Symbolischen Link erstellen\e[0m"
+	echo -e "\e[46;30mArbeitsverzeichnis: `pwd`\e[0m\n\e[46;30mAktionen:\e[0m\n\e[4;33m1=Pfad ändern\e[0m\n\e[4;33m2=Im XFCE-TERMINAL öffnen\e[0m\n\e[4;33m3=Befehl im Verzeichnis ausführen\e[0m\n\e[4;33m4=Dateien und Verzeichnisse auflisten\e[0m\n\e[4;33m5=Neuer Ordner\e[0m\n\e[4;33m6=Neue Datei\e[0m\n\e[4;33m7=In der Bash öffnen\e[0m\n\e[4;33m8=In Sublime Text öffnen\e[0m\n\e[4;33m9=Datei oder Verzeichnis löschen\e[0m\n\e[4;33m10=Symbolischen Link erstellen\e[0m\n\e[4;33m11=Datei auslesen\e[0m"
 	read action
 	if echo $action | egrep "." >&/dev/null
 	then 
@@ -106,6 +106,12 @@ while [[ true ]]; do
 			else
 				ln -s "$start" "$end"
 				echo -e "\e[46;30mSymbolischer Link erstellt\e[0m"
+			fi
+		elif [ $action = "11" ]
+		then echo -n -e "\e[4;33mDatei:\e[0m " ; read datei
+			if [ -f "$datei" ]
+			then less "$datei"
+			else echo -e "\e[41mDatei nicht gefunden oder ist ein Verzeichnis"
 			fi
 		else 
 			echo -e "\e[41mUnbekannte Aktion\e[0m"
