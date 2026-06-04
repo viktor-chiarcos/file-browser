@@ -36,7 +36,8 @@ bakwht='\e[47m'   # White
 txtrst='\e[0m'    # Text Reset
 }
 
-echo -e "\e[46;30mFile Browser Version 1.2.2\e[0m"
+echo -e "\e[46;30mFile Browser Version 2.1.1\e[0m"
+echo -e "\e[41mZum abbrechen einer Aktion Strg/Ctl+D drüken.\e[0m\n\e[41mZum stoppen vom file-browser bitte Strg/ctl+C drücken"
 if echo $1 | egrep "." >&/dev/null
 then
 	if [ $1 = "-h" ]
@@ -56,7 +57,7 @@ fi
 
 while [[ true ]]; do
 	cd $DIRECTORY
-	echo -e "\e[46;30mArbeitsverzeichnis: `pwd`\e[0m\n\e[46;30mAktionen:\e[0m\n\e[4;33m1=Pfad ändern\e[0m \e[4;36m2=Im XFCE-TERMINAL öffnen\e[0m\n\e[4;33m3=Befehl im Verzeichnis ausführen\e[0m \e[4;36m4=Dateien und Verzeichnisse auflisten\e[0m\n\e[4;33m5=Neuer Ordner\e[0m \e[4;36m6=Neue Datei\e[0m\n\e[4;33m7=In der Bash öffnen\e[0m \e[4;36m8=In Sublime Text öffnen\e[0m\n\e[4;33m9=Datei oder Verzeichnis löschen\e[0m \e[4;36m10=Symbolischen Link erstellen\e[0m\n\e[4;33m11=Datei auslesen\e[0m"
+	echo -e "\e[46;30mArbeitsverzeichnis: `pwd`\e[0m\n\e[46;30mAktionen:\e[0m\n\e[4;33m1=Pfad ändern\e[0m \e[4;36m2=Im XFCE-TERMINAL öffnen\e[0m\n\e[4;33m3=Befehl im Verzeichnis ausführen\e[0m \e[4;36m4=Dateien und Verzeichnisse auflisten\e[0m\n\e[4;33m5=Neuer Ordner\e[0m \e[4;36m6=Neue Datei\e[0m\n\e[4;33m7=In der Bash öffnen\e[0m \e[4;36m8=In Sublime Text öffnen\e[0m\n\e[4;33m9=Datei oder Verzeichnis löschen\e[0m \e[4;36m10=Symbolischen Link erstellen\e[0m\n\e[4;33m11=Datei auslesen\e[0m \e[4;36m12=Datei verschieben oder umbenennen\e[0m\n\e[4;33m13=In nano öffnen\e[0m"
 	read action
 	if echo $action | egrep "." >&/dev/null
 	then 
@@ -113,6 +114,17 @@ while [[ true ]]; do
 			then less "$datei"
 			else echo -e "\e[41mDatei nicht gefunden oder ist ein Verzeichnis"
 			fi
+		elif [ $action = "12" ]
+		then echo -ne "\e[4;33mEingabe:\e[0m "; read input ;\
+			if [ ! -e "$input" ]
+			then echo -e "\e[41mDie Eingabe wurde nicht gefunden! Zum anzeigen von Variablen \"\\\$variable\" schreiben\e[0m"
+			else
+				echo -ne "\e[4;33mAusgabe:\e[0m "; read output
+				mv "$input" "$output"
+			fi
+		elif [ $action = "13" ]
+		then echo -e -n "\e[4;33mDatei:\e[0m " ; read datei
+			nano "$datei"
 		else 
 			echo -e "\e[41mUnbekannte Aktion\e[0m"
 		fi
